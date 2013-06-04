@@ -1,0 +1,16 @@
+barplot(canvasId, dataset, optionalArgs):
+    Description: 
+        do a bar chart
+        supports: stacked / juxtaposed barplots;
+    Parameters:
+        canvasId
+        dataset: [[data lables], [data1], [data2]] 
+        /*optional*/ optionalArgs:
+            {beside:false, main: mainName, xlab: xlabName, ylab: ylabName}
+
+
+
+=========================
+Todo:
+> adding color schemes (now using shades of gray)
+> adding legend?
