@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <script type="text/javascript" src="jplot.js"></script>
+        <script type="text/javascript">
+            var gear = [
+                [3,4,5],
+                [15,12,5]
+            ];
+            function plot(){
+                jplot.barplot("demo", gear);
+            }
+        </script>
+    </head>
+
+    <body onload="plot()">
+        <canvas id="demo" width="200" height="200"></canvas>
+       
+    </body>
+</html>
