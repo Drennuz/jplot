@@ -170,9 +170,9 @@
                 else
                     options.beside = undefined;
                 
-                options.main = canvas.getAttribute('data-main-label') || undefined;
-                options.xlab = canvas.getAttribute('data-x-axis') || undefined;
-                options.ylab = canvas.getAttribute('data-y-axis') || undefined;
+                options.main = canvas.getAttribute('data-main') || undefined;
+                options.xlab = canvas.getAttribute('data-xlab') || undefined;
+                options.ylab = canvas.getAttribute('data-ylab') || undefined;
                 
                var handleData = function(event) { 
                  try {

@@ -13,3 +13,4 @@ Download source code (https://github.com/Drennuz/jplot/blob/master/jplot.js) and
 Type of graphs supported:
 -----
 1. Bar Plots
+
