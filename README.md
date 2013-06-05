@@ -1,3 +1,3 @@
-jplot
+JPlot
 =====
-jplot is a javascript library doing R-style plotting.
+JPlot is a javascript library doing R-style plotting.
