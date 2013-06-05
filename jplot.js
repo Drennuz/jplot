@@ -157,6 +157,44 @@
         }
 
     }
+    var handleDOMContentLoaded = function (e){
+        var canvases = document.getElementsByClassName('jplot');
+        Array.prototype.forEach.call(canvases, function(canvas){
+            var options = {};
+            var dataset = canvas.getAttribute('data-source');
+            var graphType = canvas.getAttribute('data-jplot-type');
+            if(graphType == "barplot"){
+                if(canvas.getAttribute('data-beside')){
+                    options.beside = (canvas.getAttribute('data-beside') === 'true');
+                }
+                else
+                    options.beside = undefined;
+                
+                options.main = canvas.getAttribute('data-main-label') || undefined;
+                options.xlab = canvas.getAttribute('data-x-axis') || undefined;
+                options.ylab = canvas.getAttribute('data-y-axis') || undefined;
+                
+               var handleData = function(event) { 
+                 try {
+                   dataset = JSON.parse(this.responseText); 
+                 } catch(error) { throw new Error(error) }
+                 jplot.barplot(canvas.id, dataset, options);
+               };
+            }
+
+            if (!/^http/.test(dataset)) {
+                handleData();
+            } else {
+                var xhr = new XMLHttpRequest();
+                xhr.onload =  handleData;
+                xhr.addEventListener('error', function(){});
+                xhr.open('GET', dataset , true);
+                xhr.send();
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
 
     root.jplot = jplot;
 }).call(this);
