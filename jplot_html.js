@@ -1,11 +1,31 @@
-;(function(){
-    var root = this || window;
+document.addEventListener('DOMContentLoaded', function() {
+    var canvases = document.getElementsByClassName('jplot-barplot');
 
-    var jplot = {};
+    /*
+    ;(function() {
+      var root = this || window;
+      var namespace = {};
+      namespace.foo = function() {
+       console.log('public');
+      };
+      var internalScope = function() {
+       console.log('you will not ever see this!');
+      };
+      internalScope();
+      console.log('Hello!');
+      console.log(this === window);
+      
+      root.namespace = namespace;
+
+    }).call(this);*/
+
+    //namespace
+
+    //properties
     var FONT_TYPE = 'Arial'; 
     var FONT_SHRINK = 0.6;
     var USAGE = "dataset format: [[data labels], [dataset1], [dataset2], ...]. Data labels and dataset*s must be of same length"
-
+ 
     //checking if all elements in one array are of the same length
     var checkEqualSize = function (array){
         var eleLength = array.map(function(x){return x.length;}); 
@@ -35,18 +55,28 @@
     //***** plotting starts here *****
     //barplots
 
-    jplot.barplot = function (canvasId, dataset, /*optional*/ optionalArgs){
-        var canvas = document.getElementById(canvasId);
+
+Array.prototype.forEach.call(canvases, function(canvas) {
+    console.log('canvas height: %i', canvas.height);
+    //console.log(canvas.getAttribute('data-graph-data'));
+
+    var canvasId = canvas.id;
+    var dataset = [
+        ["jan","feb","mar"],
+        [10,15,20]
+    ];
+    
+//    jplot.barplot = function (canvasId, dataset, /*optional*/ optionalArgs){
         var context = canvas.getContext('2d');
-        var options = optionalArgs || {};
         
         // consider use using options object and not storing in separate `var`s
-        var beside = options.beside || true;
-        var main =  options.main|| undefined;
-        var xlab = options.xlab || undefined;
-        var ylab = options.ylab || undefined;
+        var beside = canvas.getAttribute('data-graph-type') || true;
+        var main =  canvas.getAttribute('data-main-label')|| undefined;
+        var xlab = canvas.getAttribute('data-x-axis-label') || undefined;
+        var ylab = canvas.getAttribute('data-y-axis-label') || undefined;
 
         //checking dataset: length >= 2; all elements have equal length
+        //question: a better error notification method? 
         if (dataset.length <= 1 || (!checkEqualSize(dataset))) throw new Error(USAGE);
         //draw
         var offset = 0.1; //take 80% of total area for bars
@@ -127,7 +157,14 @@
             context.fillText(main, 0.5*canvas.width, 0.8 * offset * canvas.height); 
         }
 
-    }
+        /*trial
+        canvas.context.fillStyle = "rgb(10,10,10)";
+        canvas.context.fillRect(0, 0, 150, 75);
+        canvas.context.fillStyle = "#0000FF";
+        canvas.context.fillRect(200, 0, 150, 75);
+        */
+//    }
 
-    root.jplot = jplot;
-}).call(this);
+  });
+});
+
