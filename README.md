@@ -12,7 +12,7 @@ Download source code (https://github.com/Drennuz/jplot/blob/master/jplot.js) and
 
 Type of graphs supported:
 -----
-1. Bar Plots
+1. Bar Plots (stacked or juxtaposed)
 
 <img id="barplot-beside-true" src="images/barplot_beside_true.png?raw=true" height="300" width="300"></img>
 <img id="barplot-beside-false" src="images/barplot_beside_false.png?raw=true" height="300" width="300"></img>
