@@ -14,7 +14,6 @@ Type of graphs supported:
 -----
 1. Bar Plots
 
-<img id="barplot-beside-true" src="images/barplot_beside_true.png?raw=true" height="200" width="200"></img>
-
-<img id="barplot-beside-false" src="images/barplot_beside_false.png?raw=false" height="200" width="200"></img>
+<img id="barplot-beside-true" src="images/barplot_beside_true.png?raw=true" height="300" width="300"></img>
+<img id="barplot-beside-false" src="images/barplot_beside_false.png?raw=true" height="300" width="300"></img>
 
