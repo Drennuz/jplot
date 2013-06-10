@@ -64,24 +64,24 @@
         context.stroke()
 
         if(type == 'x'){
-            var incr = Math.round((end.x-start.x) / INTERVALS);
+            var incr = (end.x-start.x)/INTERVALS;
             var font = Math.min(12,resizeText(context, Math.round(end.x), OFFSET * canvas.height));
             for (var i = 1; i <= INTERVALS; i++){
-                var text = start.x + i*incr;
+                var text = Math.round(100*(start.x + i*incr))/100;
                 var textPos = transformCoord(canvas, {x:text, y:start.y}, boundary);
-                context.textAlign = "center";
+                context.textAlign = "end";
                 context.font = font + "px " + FONT_TYPE;
                 context.fillText('|', textPos.x, textPos.y);
                 context.fillText(text, textPos.x, textPos.y + OFFSET*canvas.height*0.3);
             }
         }
         else if(type == 'y'){
-            var incr = Math.round((end.y-start.y) / INTERVALS);
+            var incr = (end.y-start.y) / INTERVALS;
             var font = Math.min(12,resizeText(context, Math.round(end.y), OFFSET * canvas.height));
             context.save();
             context.rotate(-0.5*Math.PI);
             for (var i = 1; i<= INTERVALS; i++){
-                var text = start.y + i*incr;
+                var text = Math.round(100*(start.y + i*incr))/100;
                 var textPos = transformCoord(canvas, {x:start.x, y:text}, boundary);
                 context.font = font + "px " + FONT_TYPE;
                 context.textAlign = "center";
@@ -271,8 +271,8 @@
             labels.push(dataset[i].label);
         }
 
-        var xMax = (1+OFFSET) * maxElement(xPoints, function(x){return x;});
-        var yMax = (1+OFFSET) * maxElement(yPoints, function(x){return x;});
+        var xMax = maxElement(xPoints, function(x){return x;});
+        var yMax = maxElement(yPoints, function(x){return x;});
         var labelMax = maxElement(labels, function(x){return x.length;});
 
         var boundary = {xMax:xMax, xMin:xMin, yMax:yMax, yMin:yMin};
@@ -291,6 +291,7 @@
                 var outputTuple = transformCoord(canvas, thisTuple, boundary);
                 ctx.fillStyle = colors[i % colors.length];
                 ctx.font = POINT_FONT;
+                ctx.textAlign = "end";
                 ctx.fillText("x", outputTuple.x, outputTuple.y);
                 // if type = "b", draw connecting lines; starting from data point 1
                 if (type == "b" && j > 0){
@@ -304,6 +305,7 @@
                 previousTuple = thisTuple;
             }
             //adding legends
+            ctx.textAlign = "left";
             ctx.beginPath();
             ctx.fillStyle = colors[i % colors.length];
             ctx.strokeStyle = colors[i % colors.length];
@@ -316,8 +318,8 @@
         }
 
         // adding x-axis and y-axis and measurements
-        var fontX = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMax / (1+OFFSET), y:yMin}, boundary, "x");
-        var fontY = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMin, y:yMax / (1+OFFSET)}, boundary, "y");
+        var fontX = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMax, y:yMin}, boundary, "x");
+        var fontY = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMin, y:yMax}, boundary, "y");
         // adding other titles
         if(xlab){
             axisTitle(canvas, 1.5 * fontX, xlab, 'x');
