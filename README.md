@@ -8,6 +8,12 @@ Download source code (https://github.com/Drennuz/jplot/blob/master/jplot.js) and
 
     <script type="text/javascript" src="jplot.js"></script>
 
+General syntax:
+```javascript
+jplot.func_name(canvasId, dataset, optionalArgs)
+//general optionalArgs: main; xlab; ylab
+```
+
 Sample javascript calls can be found in `index.html` file.
 
 Supporting plots:
@@ -41,7 +47,7 @@ Special optionalArgs:
 
 sample code: 
 ```javascript
-\\dataset inspired by the Orange dataset in R
+//dataset inspired by the Orange dataset in R
 var dataset = [
     {label:"Tree1",x:[118,484,664,1004,1231,1372,1582], y:[30,51,75,108,115,139,140]},
     {label:"Tree2", x:[118,484,664,1004,1231,1372,1582], y:[30,58,87,115,120,142,145]},
@@ -50,6 +56,22 @@ var dataset = [
 ];
 
 jplot.lines("demo", dataset, {main:"Tree Growth", ylab:"Circumference(mm)", xlab:"Age(days)", type:"b", minX: 0, minY: 0}); //minX and minY scale the starting point accordingly.
+```
+
+### hist(canvasId, dataset, optionalArgs)
+Draw histograms
+
+Special optionalArgs:
+* breaks: number of cells for the histogram, default = 5
+
+<img id="hist" src="images/hist.png?raw=true" height="300" width="300"></img>
+
+Sample code:
+```javascript
+//dataset inspired by mtcars$mpg in R
+var hist_dataset = [21.0, 21.0, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26.0, 30.4, 15.8, 19.7, 15.0, 21.4]
+
+jplot.hist("demo", hist_dataset, {main:"Histogram of mtcars$mpg", xlab: "mtcars$mpg", breaks: 6)
 ```
 
 Best Practices:

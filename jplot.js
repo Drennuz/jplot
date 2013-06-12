@@ -50,13 +50,15 @@
     }
 
     // plot a line with measurements; useful for x and y-axis
-    var plotAxis = function (canvas, start, end, boundary, type){  // all as of dataset coordinates
+    var plotAxis = function (canvas, start, end, boundary, type, decimals){  // all as of dataset coordinates
         var context = canvas.getContext("2d");
         context.strokeStyle = "black";
         context.fillStyle = "black";
        
         var start_canvas = transformCoord(canvas, start, boundary);
         var end_canvas = transformCoord(canvas, end, boundary);
+
+        var multiplier = 1 * (Math.pow(10,decimals));
 
         context.beginPath();
         context.moveTo(start_canvas.x, start_canvas.y);
@@ -66,12 +68,15 @@
         if(type == 'x'){
             var incr = (end.x-start.x)/INTERVALS;
             var font = Math.min(12,resizeText(context, Math.round(end.x), OFFSET * canvas.height));
-            for (var i = 1; i <= INTERVALS; i++){
-                var text = Math.round(100*(start.x + i*incr))/100;
+            for (var i = 0; i <= INTERVALS; i++){
+                var text = Math.round(multiplier*(start.x + i*incr))/multiplier;
                 var textPos = transformCoord(canvas, {x:text, y:start.y}, boundary);
                 context.textAlign = "end";
                 context.font = font + "px " + FONT_TYPE;
-                context.fillText('|', textPos.x, textPos.y);
+                if (i == 0){
+                    text = "x=" + text;}
+                if (i > 0)
+                    context.fillText('|', textPos.x, textPos.y);
                 context.fillText(text, textPos.x, textPos.y + OFFSET*canvas.height*0.3);
             }
         }
@@ -81,7 +86,7 @@
             context.save();
             context.rotate(-0.5*Math.PI);
             for (var i = 1; i<= INTERVALS; i++){
-                var text = Math.round(100*(start.y + i*incr))/100;
+                var text = Math.round(multiplier*(start.y + i*incr))/multiplier;
                 var textPos = transformCoord(canvas, {x:start.x, y:text}, boundary);
                 context.font = font + "px " + FONT_TYPE;
                 context.textAlign = "center";
@@ -108,7 +113,7 @@
         else if(type == 'x'){
             context.font = font + "px " + FONT_TYPE;
             context.textAlign = "center";
-            context.fillText(text, 0.5 * (1+OFFSET) * canvas.width, canvas.height);
+            context.fillText(text, 0.5 * (1+OFFSET) * canvas.width, (1 - 0.3*OFFSET) * canvas.height);
         }
 
     }
@@ -318,8 +323,8 @@
         }
 
         // adding x-axis and y-axis and measurements
-        var fontX = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMax, y:yMin}, boundary, "x");
-        var fontY = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMin, y:yMax}, boundary, "y");
+        var fontX = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMax, y:yMin}, boundary, "x", 2);
+        var fontY = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMin, y:yMax}, boundary, "y", 2);
         // adding other titles
         if(xlab){
             axisTitle(canvas, 1.5 * fontX, xlab, 'x');
@@ -332,6 +337,75 @@
         }
     
     }
+
+    // histogram
+    jplot.hist = function (canvasId, dataset, optionalArgs){
+        var canvas = document.getElementById(canvasId);
+        var context = canvas.getContext("2d");
+        var options = optionalArgs || {};
+        
+        if(options.breaks == undefined)
+            var breaks = 5;
+        else
+            var breaks = options.breaks;
+
+        if(options.ylab == undefined)
+            var ylab = "Frequency";
+        else
+            var ylab = options.ylab;
+        var main = options.main || undefined;
+        var xlab = options.xlab || undefined;
+        
+        var xMax = Math.max.apply(null, dataset);
+        var xMin = Math.min.apply(null, dataset);
+        var yMin = 0;
+        
+        // allocate data
+        var groups = {};
+        var intervals = (xMax-xMin) / breaks;
+        var maxLen = 0;
+
+        for (var i = 0; i < breaks - 1; i++){
+            var boundMin = xMin + i*intervals;
+            groups[i] = dataset.filter(function(x){return x>= boundMin && x < boundMin + intervals;});
+            if (groups[i].length > maxLen)
+                maxLen = groups[i].length;
+        }
+        groups[breaks-1] = dataset.filter(function(x){return x >= xMax - intervals && x <= xMax;});
+        if (groups[breaks-1].length > maxLen)
+            maxLen = groups[i].length;
+        var yMax = maxLen;
+        var boundary = {xMax:xMax, xMin:xMin, yMax:yMax, yMin:yMin};
+
+        //draw rects
+
+        context.strokeStyle = "black";
+        var barWidth = (1-OFFSET) * canvas.width / breaks;
+        for (i = 0; i < breaks; i++){
+            console.log(groups[i]);
+            var barHeight = groups[i].length / yMax * (1 - 2*OFFSET) * canvas.height;
+            var startX = xMin + i*intervals;
+            var startY = groups[i].length;
+            var outputTuple = transformCoord(canvas, {x:startX, y:startY}, boundary);
+            context.strokeRect(outputTuple.x, outputTuple.y, barWidth, barHeight);
+        }
+
+        // adding axis
+        var xFont = plotAxis(canvas, {x:xMin,y:yMin}, {x:xMax, y:yMin}, boundary, "x", 2); 
+        var yFont = plotAxis(canvas, {x:xMin, y:yMin}, {x:xMin, y:yMax}, boundary, "y", 0);
+        // adding other titles
+        if(main){
+            plotMain(canvas, main);
+        }
+        if(xlab)
+            axisTitle(canvas, 1.5 * xFont, xlab, "x");
+        if(ylab)
+            axisTitle(canvas, 1.5 * yFont, ylab, "y");
+
+    }
+
+    // density plots
+
 
 
 //handle DOM 
